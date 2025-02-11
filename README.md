@@ -40,3 +40,10 @@ By completing this milestone, we have achieved the following objectives:
 - Readme File added with overview of the project
   
 ---
+
+## **Milestone 2 Progress 🚀**  
+- Created the proper project structure.  
+- Set up frontend
+- Set up Login Page
+  
+---

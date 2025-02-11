@@ -4,6 +4,12 @@ const Port = 3000;
 
 const connectDB = require('./config/db');
 
+
+app.get('/', (req, res) => {
+    res.send('Hello World');
+});
+
+
 app.listen(Port, async() => {
     try{
         await connectDB();
@@ -13,3 +19,4 @@ app.listen(Port, async() => {
         process.exit(1);
     }  
 });
+

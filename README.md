@@ -37,8 +37,6 @@ By completing this milestone, we have achieved the following objectives:
 
 ## **Milestone 1 Progress 🚀**  
 - Project repository created and pushed to GitHub.  
-- Backend server setup with Express and Node.js.  
-- Basic database schemas for users and products designed.  
-- Initial RESTful API routes for user authentication established.  
-
+- Readme File added with overview of the project
+  
 ---

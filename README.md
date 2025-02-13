@@ -47,3 +47,16 @@ By completing this milestone, we have achieved the following objectives:
 - Set up Login Page
   
 ---
+
+## **Milestone 3 Progress 🚀**  
+- Installed the basic backend node dependencies  
+- set up basic mongodb server in db.js
+- set up basic express server in index.js
+  
+---
+
+## **Milestone 4 Progress 🚀**  
+- Created a User Model: This is like a blueprint for how myr users' data will be stored in the database.
+- Created a User Controller: This will help me manage what happens with your user data (like adding a new user or getting their information).
+- Enabled and configured Multer: Multer will allow my app to accept and store files (such as images) uploaded by users.
+---

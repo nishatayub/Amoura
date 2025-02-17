@@ -18,6 +18,31 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+app.post('/products', async (req, res) => {
+  try {
+    const { name, description, price, imageUrl } = req.body;
+
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      imageUrl,
+    });
+
+    await newProduct.save();
+
+    res.status(201).json({
+      message: 'Product created successfully',
+      product: newProduct,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({
+      message: 'Error creating product',
+      error: error.message,
+    });
+  }
+});
 app.post('/Login', async (req, res) => {
     const { email, password } = req.body;
   

@@ -84,3 +84,8 @@ By completing this milestone, we have achieved the following objectives:
 ## **Milestone 9 Progress 🚀**  
 - Created the form for products that takes images as input
 ---
+
+## **Milestone 10 Progress 🚀**  
+- Learned how to write product schema
+- Learned how to create an end point to validate and store product details in mongodb.
+---

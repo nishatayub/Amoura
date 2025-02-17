@@ -70,3 +70,8 @@ By completing this milestone, we have achieved the following objectives:
 - Encrypted the Password using bcrypt
 - Stored Complete User Data in the database
 ---
+
+## **Milestone 7 Progress 🚀**  
+- Created Login Endpoint
+- Validated Password
+---

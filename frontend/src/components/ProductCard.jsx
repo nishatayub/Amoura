@@ -2,10 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const ProductCard = ({ name, image, price }) => {
-  if (!name || !image || price === undefined) {
-    return <div className="text-red-500">Invalid Product Data</div>;
-  }
-
   return (
     <div className="bg-white shadow-lg rounded-xl p-4 hover:shadow-xl transition duration-300">
       <img
@@ -22,14 +18,12 @@ const ProductCard = ({ name, image, price }) => {
   );
 };
 
-// ✅ PropTypes for validation
 ProductCard.propTypes = {
   name: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
 };
 
-// ✅ Default Props to prevent missing data issues
 ProductCard.defaultProps = {
   name: "Unnamed Product",
   image: "https://via.placeholder.com/150",

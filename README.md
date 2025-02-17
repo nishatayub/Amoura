@@ -80,3 +80,7 @@ By completing this milestone, we have achieved the following objectives:
 - Created the Card Component
 - Designed the Home page layout
 ---
+
+## **Milestone 9 Progress 🚀**  
+- Created the form for products that takes images as input
+---

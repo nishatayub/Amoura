@@ -10,6 +10,7 @@ const Login = () => {
             alert('Please fill in all fields');
             return;
         }
+        e.target = "";
     };
 
     return (

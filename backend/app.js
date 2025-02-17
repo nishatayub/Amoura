@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/login', async (req, res) => {
+app.post('/Login', async (req, res) => {
     const { email, password } = req.body;
   
     try {
@@ -40,8 +40,6 @@ app.post('/login', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
-  
-
 
 app.post('/Signup', async(req,res) => {
     const {username, email, password } = req.body;

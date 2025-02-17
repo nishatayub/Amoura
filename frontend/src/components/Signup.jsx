@@ -20,13 +20,23 @@ const Signup = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateForm()) {
-            // Submit form
-            console.log('Form submitted');
+      
+        try {
+          const response = await fetch("http://localhost:5000/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+      
+          const data = await response.json();
+          alert(data.message);
+        } catch (error) {
+          console.error("Error:", error);
         }
-    };
+      };
+      
 
     return (
         <div>

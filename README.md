@@ -64,3 +64,9 @@ By completing this milestone, we have achieved the following objectives:
 ## **Milestone 5 Progress 🚀**  
 - Built the Sign-Up Page with HTML and CSS.
 - Added form validation to ensure users input valid data.
+---
+
+## **Milestone 6 Progress 🚀**  
+- Encrypted the Password using bcrypt
+- Stored Complete User Data in the database
+---

@@ -75,3 +75,8 @@ By completing this milestone, we have achieved the following objectives:
 - Created Login Endpoint
 - Validated Password
 ---
+
+## **Milestone 8 Progress 🚀**  
+- Created the Card Component
+- Designed the Home page layout
+---

@@ -1,16 +1,17 @@
 
-import './App.css'
-import './index.css' // Add this line to import Tailwind CSS
-import LoginPage from './components/LoginPage';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Signup from "./components/Signup";
+import Login from "./components/Login";
 
 function App() {
- 
-
   return (
-    <div className="App">
-      <LoginPage />
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Login" element={<Login />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

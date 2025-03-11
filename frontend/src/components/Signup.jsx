@@ -1,103 +1,147 @@
-import React from 'react'
 import { useState } from 'react';
-const Signup = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({});
+import { Link } from 'react-router-dom';
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (!username) newErrors.username = 'Username is required';
-        if (!email) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            newErrors.email = 'Email address is invalid';
+const SignUp = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+    });
+
+    const [passwordErrors, setPasswordErrors] = useState([]);
+
+    const validatePassword = (password) => {
+        const errors = [];
+        if (password.length < 6) {
+            errors.push('Password must be at least 6 characters long.');
         }
-        if (!password) newErrors.password = 'Password is required';
-        else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters long';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        if (!/\d/.test(password)) {
+            errors.push('Password must include at least one number.');
+        }
+        if (!/[A-Z]/.test(password)) {
+            errors.push('Password must include at least one uppercase letter.');
+        }
+        if (!/[!@#$%^&*]/.test(password)) {
+            errors.push('Password must include at least one special character (!@#$%^&*).');
+        }
+        return errors;
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+
+        if (name === 'password') {
+            setPasswordErrors(validatePassword(value));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
         try {
-          const response = await fetch("http://localhost:5000/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
-      
-          const data = await response.json();
-          alert(data.message);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-      
+            const response = await fetch("http://localhost:4000/api/users/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            })
+
+            if (response.ok) {
+                // Redirect to login page or home page after successful signup
+                window.location.href = "/login";
+            } else {
+                // Handle errors returned from the backend
+                const errorData = await response.json();
+                alert(errorData.message);
+            }
+    } catch (error) {
+        console.error("Error:", error.message);
+    }
+};
 
     return (
-        <div>
-            <div className="flex flex-col items-center justify-center min-h-screen bg-pink-100">
-                <h1 className="text-4xl font-bold text-pink-600 mb-8">Sign Up</h1>
-                <form className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm" onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-pink-700 text-sm font-bold mb-2" htmlFor="username">
-                            Username
+        <div className="flex items-center justify-center min-h-screen bg-pink-100">
+            <div className="w-full max-w-lg p-10 bg-yellow-100 rounded-lg shadow-2xl">
+                <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Create Account</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-6">
+                        <label
+                            htmlFor="name"
+                            className="block text-lg font-medium text-gray-700 mb-2"
+                        >
+                            Full Name
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="username"
                             type="text"
-                            placeholder="Username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            id="name"
+                            name="name" 
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-5 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
-                        {errors.username && <p className="text-red-500 text-xs italic">{errors.username}</p>}
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-pink-700 text-sm font-bold mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="email"
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
                     </div>
                     <div className="mb-6">
-                        <label className="block text-pink-700 text-sm font-bold mb-2" htmlFor="password">
+                        <label
+                            htmlFor="email"
+                            className="block text-lg font-medium text-gray-700 mb-2"
+                        >
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-5 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+                    <div className="mb-8">
+                        <label
+                            htmlFor="password"
+                            className="block text-lg font-medium text-gray-700 mb-2"
+                        >
                             Password
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            id="password"
                             type="password"
-                            placeholder="******************"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-5 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
-                        {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+                        {/* Display Password Validation Errors */}
+                        <ul className="mt-3 text-sm text-red-500">
+                            {passwordErrors.map((error, index) => (
+                                <li key={index}>• {error}</li>
+                            ))}
+                        </ul>
                     </div>
-                    <div className="flex items-center justify-between">
-                        <button
-                            className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit"
-                        >
-                            Sign Up
-                        </button>
-                    </div>
+                    <button
+                        type="submit"
+                        className="w-full py-3 text-lg text-black bg-blue-200 rounded-lg hover:bg-blue-300"
+                        disabled={passwordErrors.length > 0}
+                    >
+                        Sign Up
+                    </button>
                 </form>
+                <div className="text-center mt-4">
+                    <Link to="/login" className="text-blue-500 hover:underline">
+                        Already have an account? Login here
+                    </Link>
+                </div>
             </div>
         </div>
     );
 };
 
+export default SignUp;
 
-export default Signup;

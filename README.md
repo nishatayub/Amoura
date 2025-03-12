@@ -737,6 +737,14 @@ This lesson will help you understand how to allow users to cancel their placed o
 - Updated the order status to "Canceled" when an order is canceled.
 - Ensured the cancel button is not displayed for orders that are already canceled.
 
+### Steps for Milestone 29 📝
+1. **Order Conformation Page you need two options for payment one is COD and another is online payment.:**
+   - Add two options for payment one is COD and another is online payment.
+   - Create radio buttons to select COD or online payment and when we click on online payment PayPal buttons need to be displayed.
 
+### Outcome
+This lesson will help you Learn how to use PayPal API and
+Learn how to Integrate online payments.
 
-
+### Progress
+- Created radio buttons to select COD or online payment and when we click on online payment PayPal buttons need to be displayed.

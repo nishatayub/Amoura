@@ -803,3 +803,10 @@ The eCommerce application now supports PayPal payments, enabling users to checko
 - Used sign method to create an JWT token with mail and ID
 - Gave maxAge to set expire time
 - Added the cookie inside the response that helps you to store the cookie inside browser.
+
+
+### Steps for Milestone 34
+
+- Got the token from the browser cookie and send it to the server
+- In backend wrote an middleware function to validate that JWT token
+- In every page made sure that this steps will happen so that user cannot go to that page with out login

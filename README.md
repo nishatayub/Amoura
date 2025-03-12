@@ -780,3 +780,12 @@ Tested successful and failed transactions to ensure proper handling.
 ### Outcome
 The eCommerce application now supports PayPal payments, enabling users to checkout securely.
 
+
+### Steps for Milestone 31
+
+- Installed an npm package called react-redux
+- created an new folder called store with two files store.js and userActions.js.
+- We stored user mail inside global state.
+- In store.js file configured an store with userReducer function that will handle global user email state.
+- Inside userActions.js file wrote an function called setEmail that will help in storing email state inside global state.
+- In Index.js file made sure to wrap APP component inside provider component with store as props.

@@ -14,9 +14,10 @@ import SelectAddress from "./components/SelectAddress"; // Import SelectAddress
 import OrderConfirmation from "./components/OrderConfirmation"; // Import OrderConfirmation
 import OrderSuccess from "./components/OrderSuccess"; // Import OrderSuccess
 import MyOrders from "./components/MyOrders"; // Import MyOrders
+import { useSelector } from "react-redux";
 
 const App = () => {
-    const userEmail = "nishatayub702@gmail.com"; // Replace with the actual user email
+    const userEmail = useSelector((state) => state.user.email); 
 
     return (
         <Router>

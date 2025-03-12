@@ -1,31 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Card from './Card';
 
 const HomePage = () => {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    
-    fetch('http://localhost:4000/api/products')  
-      .then((response) => response.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.error('Error fetching products:', error));
-  }, []);
-
-  const handleDelete = (productId) => {
-    fetch(`http://localhost:4000/api/products/${productId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => {
-        if (response.ok) {
-          setProducts(products.filter((product) => product._id !== productId));
-        } else {
-          console.error('Failed to delete product');
-        }
-      })
-      .catch((error) => console.error('Error deleting product:', error));
-  };
 
   return (
     <div className="font-sans">

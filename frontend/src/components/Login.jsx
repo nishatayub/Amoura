@@ -1,25 +1,23 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux'; // Import useDispatch
-import { setEmail } from '../store/userActions.jsx'; // Import Redux action
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setEmail } from "../store/userActions"; // Import action
 
 const Login = () => {
-  const [email, setEmailInput] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmailInput] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const dispatch = useDispatch(); // Initialize Redux dispatch
-  const navigate = useNavigate(); // Initialize navigation
+  const dispatch = useDispatch(); // Redux dispatch
+  const navigate = useNavigate(); // Router navigation
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const userData = { email, password };
-
     try {
       const response = await fetch("http://localhost:4000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -27,18 +25,15 @@ const Login = () => {
 
       if (response.ok) {
         alert("Login Successful!");
+        
+        dispatch(setEmail(email));  // ✅ Store email in Redux
 
-        // ✅ Dispatch email to Redux store
-        dispatch(setEmail(email));
-
-        // ✅ Redirect to Home Page
-        navigate("/home");
+        navigate("/");  // ✅ Redirect to Dashboard
       } else {
         setError(data.message || "Login failed");
       }
     } catch (err) {
       setError(err.message);
-      console.error(err.message);
     }
   };
 

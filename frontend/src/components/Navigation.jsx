@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Dashboard from "./Dashboard";
 
 const Navigation = () => {
     const userEmail = "nishatayub702@gmail.com"; // Replace with the actual user email
@@ -6,6 +7,7 @@ const Navigation = () => {
     return (
         <header className="bg-pink-50 py-4 px-6 md:px-12">
             <div className="container mx-auto flex justify-between items-center">
+            <Dashboard />
                 <div className="w-40">
                     <Link to="/" className="text-3xl font-cursive text-gray-800">Zestwax</Link>
                 </div>

@@ -1,12 +1,13 @@
-import React from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const OrderConfirmation = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { cartProducts, selectedAddress, totalAmount, email } = location.state || {};
+    const [paymentMethod, setPaymentMethod] = useState("COD");
 
-    console.log("OrderConfirmation state:", location.state); // Debugging information
+    console.log("OrderConfirmation state:", location.state);
 
     const handlePlaceOrder = () => {
         fetch("http://localhost:4000/api/orders/place-order", {
@@ -14,7 +15,7 @@ const OrderConfirmation = () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email, cartProducts, selectedAddress, totalAmount })
+            body: JSON.stringify({ email, cartProducts, selectedAddress, totalAmount, paymentMethod })
         })
             .then((response) => response.json())
             .then((data) => {
@@ -61,6 +62,37 @@ const OrderConfirmation = () => {
             <div className="bg-white shadow-lg rounded-lg p-4 mb-6">
                 <h2 className="text-2xl font-bold mb-4">Total Amount</h2>
                 <p className="text-xl font-bold">${totalAmount}</p>
+            </div>
+            <div className="bg-white shadow-lg rounded-lg p-4 mb-6">
+                <h2 className="text-2xl font-bold mb-4">Payment Method</h2>
+                <div className="mb-4">
+                    <label className="mr-4">
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="COD"
+                            checked={paymentMethod === "COD"}
+                            onChange={() => setPaymentMethod("COD")}
+                        />
+                        Cash on Delivery (COD)
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="Online"
+                            checked={paymentMethod === "Online"}
+                            onChange={() => setPaymentMethod("Online")}
+                        />
+                        Online Payment
+                    </label>
+                </div>
+                {paymentMethod === "Online" && (
+                    <div className="paypal-buttons">
+                        {/* PayPal buttons will be integrated here in the next milestone */}
+                        <p>PayPal buttons will be displayed here.</p>
+                    </div>
+                )}
             </div>
             <button
                 onClick={handlePlaceOrder}

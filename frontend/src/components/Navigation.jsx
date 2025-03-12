@@ -1,8 +1,7 @@
-
 import { Link } from "react-router-dom";
 
 const Navigation = () => {
-    const userEmail = "vimlabhatt97@gmail.com"; // Replace with the actual user email
+    const userEmail = "nishatayub702@gmail.com"; // Replace with the actual user email
 
     return (
         <header className="bg-pink-50 py-4 px-6 md:px-12">

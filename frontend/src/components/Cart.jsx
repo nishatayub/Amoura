@@ -5,7 +5,7 @@ const Cart = () => {
     const [cartProducts, setCartProducts] = useState([]);
     const userId = "67b5689b220a98f43212a3be"; // Replace with actual user ID
     const navigate = useNavigate();
-    const userEmail = "vimlabhatt97@gmail.com"; // Replace with the actual user email
+    const userEmail = "nishatayub702@gmail.com"; // Replace with the actual user email
 
     useEffect(() => {
         fetch(`http://localhost:4000/api/cart/${userId}`)

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import PayPalPayment from "../PayPalPayment";
 
 const OrderConfirmation = () => {
     const location = useLocation();
@@ -90,7 +91,10 @@ const OrderConfirmation = () => {
                 {paymentMethod === "Online" && (
                     <div className="paypal-buttons">
                         {/* PayPal buttons will be integrated here in the next milestone */}
-                        <p>PayPal buttons will be displayed here.</p>
+                        <p>React PayPal Integration</p>
+                        {paymentMethod === "Online" && (
+                            <PayPalPayment totalAmount={totalAmount} />
+                        )}
                     </div>
                 )}
             </div>

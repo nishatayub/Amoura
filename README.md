@@ -748,3 +748,35 @@ Learn how to Integrate online payments.
 
 ### Progress
 - Created radio buttons to select COD or online payment and when we click on online payment PayPal buttons need to be displayed.
+
+### Steps for Milestone 30 📝
+This milestone focuses on integrating PayPal as a payment gateway, allowing users to make secure transactions within the eCommerce application.
+
+- Key Features Implemented
+PayPal SDK Integration
+
+- Integrated the PayPal JavaScript SDK to facilitate payments.
+- Configured client-side PayPal buttons for a seamless checkout experience.
+- Environment Variables Setup
+
+- Stored the PayPal Client ID securely using .env files to prevent exposure.
+- Ensured the process.env.PAYPAL_CLIENT_ID is accessible within the frontend using Vite’s import.meta.env.
+- Fixing "process is not defined" Error
+
+- Since Vite does not expose process.env by default, we used import.meta.env instead.
+- Ensured the correct PayPal client ID was passed dynamically to avoid hardcoding.
+- Testing PayPal Payment Flow
+
+Verified the PayPal button renders correctly.
+Tested successful and failed transactions to ensure proper handling.
+
+## Steps Followed
+- Installed the PayPal JavaScript SDK in the frontend.
+- Used import.meta.env to securely access the PayPal client ID.
+- Created a PayPal button component to handle transactions.
+- Debugged and fixed the "process is not defined" error by ensuring correct environment variable access.
+- Successfully tested the PayPal integration by simulating transactions.
+
+### Outcome
+The eCommerce application now supports PayPal payments, enabling users to checkout securely.
+

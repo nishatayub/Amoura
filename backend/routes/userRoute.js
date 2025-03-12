@@ -3,13 +3,14 @@ const { signUp, getUserByEmail, addAddress } = require("../controllers/userContr
 const login = require("../controllers/loginController");
 const User = require("../models/userModel"); // Import User model
 const router = express.Router();
+const authMiddleware = require("../middlewares/authMiddleware.js");
 
 router.post("/login", login);
 router.post("/signup", signUp);
-router.get("/:email", getUserByEmail);
-router.post("/add-address", addAddress);
+router.get("/:email", authMiddleware, getUserByEmail);
+router.post("/add-address", authMiddleware,  addAddress);
 
-router.get("/:email/addresses", async (req, res) => {
+router.get("/:email/addresses", authMiddleware,  async (req, res) => {
     try {
         const { email } = req.params;
         const user = await User.findOne({ email });

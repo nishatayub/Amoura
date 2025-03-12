@@ -58,5 +58,8 @@ const addAddress = async (req, res) => {
         res.status(500).json({ message: "An error occurred while adding the address.", error: error.message });
     }
 };
+const getUserDashboard = (req, res) => {
+    res.json({ message: "Welcome to your Dashboard!", user: req.user });
+};
 
-module.exports = { signUp, getUserByEmail, addAddress };
+module.exports = { signUp, getUserByEmail, addAddress, getUserDashboard };

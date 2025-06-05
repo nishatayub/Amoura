@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const signUp = async (req, res) => {
     try {
@@ -58,8 +59,42 @@ const addAddress = async (req, res) => {
         res.status(500).json({ message: "An error occurred while adding the address.", error: error.message });
     }
 };
+
 const getUserDashboard = (req, res) => {
     res.json({ message: "Welcome to your Dashboard!", user: req.user });
 };
 
-module.exports = { signUp, getUserByEmail, addAddress, getUserDashboard };
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        res.status(200).json({ token }); 
+    } catch (error) {
+        console.error("Error logging in:", error);
+        res.status(500).json({ message: "An error occurred while logging in.", error: error.message });
+    }
+};
+
+const registerUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = new User({ email, password });
+        await user.save();
+
+        res.status(201).json({ message: "User registered successfully!" });
+    } catch (error) {
+        console.error("Error registering user:", error);
+        res.status(500).json({ message: "An error occurred while registering the user.", error: error.message });
+    }
+};
+
+module.exports = { signUp, getUserByEmail, addAddress, getUserDashboard, loginUser, registerUser };

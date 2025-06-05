@@ -1,11 +1,13 @@
 const express = require("express");
 const { signUp, getUserByEmail, addAddress } = require("../controllers/userController");
 const login = require("../controllers/loginController");
-const User = require("../models/userModel"); // Import User model
+const User = require("../models/userModel");
 const router = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware.js");
 
-router.post("/login", login);
+const { loginUser, registerUser } = require("../controllers/userController");
+
+router.post("/login", login); 
 router.post("/signup", signUp);
 router.get("/:email", authMiddleware, getUserByEmail);
 router.post("/add-address", authMiddleware,  addAddress);
@@ -24,6 +26,10 @@ router.get("/:email/addresses", authMiddleware,  async (req, res) => {
         console.error("Error fetching addresses:", error);
         res.status(500).json({ message: "An error occurred while fetching addresses.", error: error.message });
     }
+});
+
+router.get("/api/protected-route", authMiddleware, (req, res) => {
+    res.status(200).json({ message: "Protected route accessed!", user: req.user });
 });
 
 module.exports = router;

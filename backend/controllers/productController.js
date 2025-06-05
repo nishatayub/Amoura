@@ -57,23 +57,34 @@ const getAllProducts = async (req, res) => {
         res.status(500).json({ message: "An error occurred while fetching products.", error: error.message });
     }
 };
-
-const getProductsByEmail = async (req, res) => {
+const getProductsByUserEmail = async (req, res) => {
     try {
-        const { email } = req.params;
-        console.log("Fetching products for email:", email);
-        const products = await Product.find({ email });
-        console.log("Fetched products:", products);
-        res.status(200).json(products);
+      const { email } = req.params;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+  
+      const products = await Product.find({ userEmail: email });
+  
+      if (!products.length) {
+        return res.status(404).json({ message: "No products found" });
+      }
+  
+      res.json(products);
     } catch (error) {
-        console.error("Error fetching products:", error);
-        res.status(500).json({ message: "An error occurred while fetching products.", error: error.message });
+      console.error("Error fetching products:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
-};
+  };
+  
 
 const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "Invalid product ID" });
+        }
         const product = await Product.findById(id);
         res.status(200).json(product);
     } catch (error) {
@@ -131,5 +142,5 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-module.exports = { addProduct, getAllProducts, getProductsByEmail, getProductById, updateProduct, deleteProduct };
+module.exports = { addProduct, getAllProducts, getProductsByUserEmail, getProductById, updateProduct, deleteProduct };
 

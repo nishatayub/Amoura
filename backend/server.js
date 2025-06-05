@@ -9,21 +9,40 @@ const productRouter = require("./routes/productRoute");
 const cartRouter = require("./routes/cartRoute");
 const orderRouter = require("./routes/orderRoute");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
+app.use(
+    cors({
+        origin: `http://localhost:5174`, 
+        credentials: true, 
+    })
+);
 
 app.use(express.json());
-app.use(cors());
-app.use(fileUpload());
+app.use(cookieParser());
+app.use(
+    fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 }, 
+    })
+);
+
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
     res.send("API is running");
 });
+app.use(express.json({ limit: "50mb" })); 
+app.use(express.urlencoded({ limit: "50mb", extended: true })); 
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/orders", orderRouter);
+
+app.get("/api/protected-route", (req, res) => {
+    res.status(200).json({ message: "Protected route accessed successfully!" });
+});
 
 connectDB().then(() => {
     app.listen(4000, () => {

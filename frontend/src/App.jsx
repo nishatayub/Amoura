@@ -1,10 +1,7 @@
+import LandingPage from './pages/LandingPage'
 
+function App() {
+  return <LandingPage />
+}
 
-const App = () => {
-    return (
-        <>
-		</>
-    );
-};
-
-export default App;
+export default App

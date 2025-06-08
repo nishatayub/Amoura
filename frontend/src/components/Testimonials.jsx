@@ -36,12 +36,30 @@ const testimonials = [
 ]
 
 const Testimonials = () => (
-  <section className="bg-gradient-to-b from-[#bfaee6] to-[#dbe6c4] py-12">
-    <h2 className="text-2xl md:text-3xl font-serif font-bold text-center text-[#2a4637] mb-10 tracking-wide">SEE WHAT PEOPLE HAVE TO SAY ABOUT US</h2>
-    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-      {testimonials.map((testimonial, idx) => (
-        <TestimonialCard key={idx} {...testimonial} />
-      ))}
+  <section className="bg-transparent py-20 relative overflow-hidden">
+    {/* Background decorative elements */}
+    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjJFQkQ5IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4xIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-20"></div>
+    
+    <div className="relative z-10">
+      <div className="text-center mb-16">
+        <div className="inline-flex items-center gap-3 mb-4">
+          <span className="text-sm">💬</span>
+          <span className="text-lg font-medium text-[#DF804D] tracking-wide">TESTIMONIALS</span>
+          <span className="text-sm">⭐</span>
+        </div>
+        <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 bg-gradient-to-r from-[#DF804D] via-[#F2EBD9] to-[#DF804D] bg-clip-text text-transparent">
+          What Our Customers Say
+        </h2>
+        <p className="text-lg text-[#F2EBD9]/80 max-w-2xl mx-auto">
+          Discover why thousands of customers trust us for their special moments
+        </p>
+      </div>
+      
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+        {testimonials.map((testimonial, idx) => (
+          <TestimonialCard key={idx} {...testimonial} />
+        ))}
+      </div>
     </div>
   </section>
 )

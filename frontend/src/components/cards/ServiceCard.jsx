@@ -8,7 +8,7 @@ const ServiceCard = ({ image, title, description, icon, link }) => (
           {icon}
         </div>
       </div>
-      <h3 className="text-2xl font-serif font-bold text-white mb-4 group-hover:text-[#DF804D] transition-colors duration-300">{title}</h3>
+      <h3 className="text-2xl font-serif font-bold text-white mb-4 transition-colors duration-300">{title}</h3>
       <p className="text-white/80 text-base mb-8 leading-relaxed">{description}</p>
       <a 
         href={link} 

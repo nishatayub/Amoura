@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const Navbar = () => {
+const Navbar = ({ authType, setAuthType, setShowAuth }) => {
   return (
     <>
       <header className="w-full fixed top-0 left-0 z-50 bg-white/10 backdrop-blur-lg shadow-lg border-b border-white/20">
@@ -29,12 +29,42 @@ const Navbar = () => {
               Contact
             </a>
           </div>
-          <div className="flex gap-3">
-            <Link to="/login">
-              <button className="bg-white/20 backdrop-blur-sm text-white border-2 border-white/30 px-6 py-3 rounded-full font-semibold hover:bg-white/30 hover:scale-105 transition-all duration-300 shadow-lg">
+          
+          {/* Auth Toggle Buttons - Same UI as Hero section */}
+          <div className="relative bg-white/10 rounded-full p-1 backdrop-blur-md border border-white/20 min-w-[140px]">
+            <div 
+              className={`absolute top-1 h-8 bg-gradient-to-r from-[#DF804D] to-[#632111] rounded-full transition-all duration-500 ease-in-out ${
+                authType === 'login' ? 'left-1 w-[calc(50%-4px)]' : 'right-1 w-[calc(50%-4px)]'
+              }`}
+            ></div>
+            <div className="relative z-10 flex">
+              <button
+                onClick={() => {
+                  setAuthType('login')
+                  setShowAuth(true)
+                }}
+                className={`flex-1 py-2 px-3 text-xs font-semibold transition-all duration-300 rounded-full whitespace-nowrap ${
+                  authType === 'login' 
+                    ? 'text-white' 
+                    : 'text-[#F2EBD9]/70 hover:text-[#F2EBD9]'
+                }`}
+              >
                 Login
               </button>
-            </Link>
+              <button
+                onClick={() => {
+                  setAuthType('signup')
+                  setShowAuth(true)
+                }}
+                className={`flex-1 py-2 px-3 text-xs font-semibold transition-all duration-300 rounded-full whitespace-nowrap ${
+                  authType === 'signup' 
+                    ? 'text-white' 
+                    : 'text-[#F2EBD9]/70 hover:text-[#F2EBD9]'
+                }`}
+              >
+                Sign Up
+              </button>
+            </div>
           </div>
         </nav>
       </header>

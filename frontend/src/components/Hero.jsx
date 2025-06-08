@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import heroImage from '../assets/bgimg.png'
 
-const Hero = ({ userType, onUserTypeChange }) => {
+const Hero = ({ userType, onUserTypeChange, authType, showAuth }) => {
   const [formData, setFormData] = useState({
     // Common fields
     email: '',
@@ -119,8 +119,15 @@ const Hero = ({ userType, onUserTypeChange }) => {
               <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/30 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 {/* Header */}
                 <div className="text-center mb-4">
-                  <h2 className="text-xl font-serif font-bold text-[#F2EBD9] mb-1">Get Started</h2>
-                  <p className="text-[#F2EBD9]/70 text-xs">Create your account and join our community</p>
+                  <h2 className="text-xl font-serif font-bold text-[#F2EBD9] mb-1">
+                    {showAuth && authType === 'login' ? 'Welcome Back' : 'Get Started'}
+                  </h2>
+                  <p className="text-[#F2EBD9]/70 text-xs">
+                    {showAuth && authType === 'login' 
+                      ? 'Sign in to your account to continue' 
+                      : 'Create your account and join our community'
+                    }
+                  </p>
                 </div>
 
                 {/* Animated Toggle Switcher */}
@@ -158,9 +165,51 @@ const Hero = ({ userType, onUserTypeChange }) => {
 
                 {/* Dynamic Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Customer Form */}
-                  {userType === 'customer' && (
-                    <div className="space-y-3 animate-fadeInUp">
+                  {/* Login Form */}
+                  {showAuth && authType === 'login' ? (
+                    <div className="space-y-3 transition-all duration-700 ease-in-out animate-fadeInUp">
+                      {/* Email */}
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2.5 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:border-[#DF804D] focus:bg-white/25 transition-all duration-300 text-sm"
+                        required
+                      />
+                      
+                      {/* Password */}
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2.5 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:border-[#DF804D] focus:bg-white/25 transition-all duration-300 text-sm"
+                        required
+                      />
+                      
+                      {/* Remember Me & Forgot Password */}
+                      <div className="flex items-center justify-between text-xs">
+                        <label className="flex items-center text-[#F2EBD9]/80">
+                          <input
+                            type="checkbox"
+                            className="mr-2 w-3 h-3 rounded border-white/30 bg-white/20 text-[#DF804D]"
+                          />
+                          Remember me
+                        </label>
+                        <span className="text-[#DF804D] cursor-pointer hover:underline">
+                          Forgot password?
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Signup Forms */
+                    <>
+                      {/* Customer Form */}
+                      {userType === 'customer' && (
+                    <div className="space-y-3 transition-all duration-700 ease-in-out animate-fadeInUp">
                       {/* First Row - 2 Column Layout */}
                       <div className="grid grid-cols-2 gap-3">
                         <input
@@ -231,7 +280,7 @@ const Hero = ({ userType, onUserTypeChange }) => {
 
                   {/* Seller Form */}
                   {userType === 'seller' && (
-                    <div className="space-y-3 animate-fadeInUp">
+                    <div className="space-y-3 transition-all duration-700 ease-in-out animate-fadeInUp">
                       {/* Business Name */}
                       <input
                         type="text"
@@ -308,19 +357,35 @@ const Hero = ({ userType, onUserTypeChange }) => {
                       />
                     </div>
                   )}
+                    </>
+                  )}
 
                   {/* Submit Button */}
                   <button
                     type="submit"
                     className="w-full bg-gradient-to-r from-[#DF804D] to-[#632111] text-white py-2.5 rounded-lg font-bold hover:from-[#632111] hover:to-[#DF804D] hover:scale-105 transition-all duration-300 shadow-lg flex items-center justify-center gap-2 mt-4"
                   >
-                    {userType === 'seller' ? 'Start Selling' : 'Join Amoura'}
+                    {showAuth && authType === 'login' 
+                      ? 'Sign In' 
+                      : (userType === 'seller' ? 'Start Selling' : 'Join Amoura')
+                    }
                   </button>
                 </form>
                 
                 {/* Footer */}
                 <p className="text-center text-white/60 text-xs mt-4">
-                  Already have an account? <span className="text-[#DF804D] cursor-pointer hover:underline">Sign In</span>
+                  {showAuth && authType === 'login' 
+                    ? (
+                      <>
+                        Don't have an account? <span className="text-[#DF804D] cursor-pointer hover:underline">Sign Up</span>
+                      </>
+                    ) 
+                    : (
+                      <>
+                        Already have an account? <span className="text-[#DF804D] cursor-pointer hover:underline">Sign In</span>
+                      </>
+                    )
+                  }
                 </p>
               </div>
             </div>

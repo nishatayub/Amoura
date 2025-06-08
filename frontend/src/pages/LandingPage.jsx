@@ -18,11 +18,23 @@ import Footer from '../components/layout/Footer'
 
 const LandingPage = () => {
   const [userType, setUserType] = useState('customer')
+  const [authType, setAuthType] = useState('signup')
+  const [showAuth, setShowAuth] = useState(false)
 
   return (
     <div className="bg-gradient-to-b from-[#632111] via-[#a49c83] to-[#632111] min-h-screen flex flex-col">
-      <Navbar />
-      <Hero userType={userType} onUserTypeChange={setUserType} />
+      <Navbar 
+        authType={authType} 
+        setAuthType={setAuthType}
+        showAuth={showAuth}
+        setShowAuth={setShowAuth}
+      />
+      <Hero 
+        userType={userType} 
+        onUserTypeChange={setUserType}
+        authType={authType}
+        showAuth={showAuth}
+      />
       
       {/* Content sections with smooth transitions */}
       <div className="relative">

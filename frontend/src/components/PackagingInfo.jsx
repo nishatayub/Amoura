@@ -9,7 +9,7 @@ const PackagingInfo = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-3 mb-4">
             <span className="text-sm">📦</span>
-            <span className="text-lg font-medium text-[#DF804D] tracking-wide">WHAT'S INCLUDED</span>
+            <span className="text-lg font-medium text-[#b4521d] tracking-wide">WHAT'S INCLUDED</span>
             <span className="text-sm">✨</span>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[#F2EBD9] mb-6 leading-tight">

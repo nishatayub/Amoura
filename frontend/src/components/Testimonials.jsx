@@ -44,10 +44,10 @@ const Testimonials = () => (
       <div className="text-center mb-16">
         <div className="inline-flex items-center gap-3 mb-4">
           <span className="text-sm">💬</span>
-          <span className="text-lg font-medium text-[#DF804D] tracking-wide">TESTIMONIALS</span>
+          <span className="text-lg font-medium text-[#b4521d] tracking-wide">TESTIMONIALS</span>
           <span className="text-sm">⭐</span>
         </div>
-        <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 bg-gradient-to-r from-[#DF804D] via-[#F2EBD9] to-[#DF804D] bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 bg-gradient-to-r from-[#DF804D] via-[#decfa8] to-[#DF804D] bg-clip-text text-transparent">
           What Our Customers Say
         </h2>
         <p className="text-lg text-[#F2EBD9]/80 max-w-2xl mx-auto">

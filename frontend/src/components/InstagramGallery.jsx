@@ -154,19 +154,19 @@ const InstagramGallery = () => {
   const renderStats = () => (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
       <div className="text-center">
-        <div className="text-3xl font-bold text-[#DF804D] mb-2">5.2K</div>
+        <div className="text-3xl font-bold text-[#b4521d] mb-2">5.2K</div>
         <div className="text-[#F2EBD9]/70 text-sm">Followers</div>
       </div>
       <div className="text-center">
-        <div className="text-3xl font-bold text-[#DF804D] mb-2">1.8K</div>
+        <div className="text-3xl font-bold text-[#b4521d] mb-2">1.8K</div>
         <div className="text-[#F2EBD9]/70 text-sm">Posts</div>
       </div>
       <div className="text-center">
-        <div className="text-3xl font-bold text-[#DF804D] mb-2">12.5K</div>
+        <div className="text-3xl font-bold text-[#b4521d] mb-2">12.5K</div>
         <div className="text-[#F2EBD9]/70 text-sm">Likes</div>
       </div>
       <div className="text-center">
-        <div className="text-3xl font-bold text-[#DF804D] mb-2">890</div>
+        <div className="text-3xl font-bold text-[#b4521d] mb-2">890</div>
         <div className="text-[#F2EBD9]/70 text-sm">Features</div>
       </div>
     </div>
@@ -226,11 +226,11 @@ const InstagramGallery = () => {
                 <span className="text-[#F2EBD9]/60 text-sm">2 hours ago</span>
               </div>
               
-              <p className="text-[#F2EBD9]">
+              <p className="text-[#ca6630]">
                 <span className="font-semibold">amoura</span> {selectedPost.caption}
               </p>
               
-              <p className="text-[#DF804D] text-sm">{selectedPost.hashtags}</p>
+              <p className="text-[#b8521b] text-sm">{selectedPost.hashtags}</p>
             </div>
           </div>
         </div>

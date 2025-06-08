@@ -239,7 +239,7 @@ const PopularProducts = () => {
                 </div>
 
                 {/* Product Info */}
-                <h3 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#DF804D] transition-colors duration-300 leading-tight">
+                <h3 className="text-lg font-serif font-bold text-white mb-2 transition-colors duration-300 leading-tight">
                   {product.name}
                 </h3>
                 

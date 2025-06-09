@@ -1,10 +1,10 @@
 const express = require("express");
-const { addToCart, getCartProducts, updateQuantity } = require("../controllers/cartController");
-const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware.js");
 
-router.post("/add", authMiddleware, addToCart);
-router.get("/:userId", authMiddleware, getCartProducts);
-router.post("/update-quantity", authMiddleware, updateQuantity);
+const router = express.Router();
+
+// Placeholder routes - implement as needed
+router.get("/", (req, res) => {
+    res.json({ message: "Cart routes - coming soon" });
+});
 
 module.exports = router;

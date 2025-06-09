@@ -13,6 +13,11 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    category: {
+        type: String,
+        required: true,
+        enum: ["Roses", "Lilies", "Tulips", "Sunflowers", "Orchids", "Carnations", "Mixed", "Tropical", "Seasonal", "Premium"]
+    },
     images: {
         type: [String],
         required: true,
@@ -21,8 +26,22 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    stock: {
+        type: Number,
+        default: 1,
+        min: 0
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    }
+}, {
+    timestamps: true
 });
 
-const Product = mongoose.model("Product", productSchema);
-
-module.exports = Product;
+module.exports = mongoose.model("Product", productSchema);

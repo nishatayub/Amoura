@@ -1,13 +1,25 @@
 const express = require("express");
+const {
+  createProduct,
+  getAllProducts,
+  getSellerProducts,
+  getProduct,
+  updateProduct,
+  deleteProduct,
+  upload
+} = require("../controllers/productController");
+const authMiddleware = require("../middlewares/authMiddleware");
+
 const router = express.Router();
-const { addProduct, getAllProducts, getProductsByUserEmail, getProductById, updateProduct, deleteProduct } = require("../controllers/productController");
-const authMiddleware = require("../middlewares/authMiddleware.js");
 
-router.post("/", authMiddleware,  addProduct);
+// Public routes
 router.get("/", getAllProducts);
-router.get("/user/:email", authMiddleware,  getProductsByUserEmail);
-router.get("/:id", getProductById); 
-router.put("/:id", authMiddleware,  updateProduct); 
-router.delete("/:id", authMiddleware,  deleteProduct); 
-module.exports = router;
+router.get("/:id", getProduct);
 
+// Protected routes (require authentication)
+router.post("/", authMiddleware, upload.array("images", 5), createProduct);
+router.get("/seller/my-products", authMiddleware, getSellerProducts);
+router.put("/:id", authMiddleware, upload.array("images", 5), updateProduct);
+router.delete("/:id", authMiddleware, deleteProduct);
+
+module.exports = router;

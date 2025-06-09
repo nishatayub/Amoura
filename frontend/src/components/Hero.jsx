@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import heroImage from '../assets/bgimg.png'
 
+
 const Hero = ({ userType, onUserTypeChange, authType, showAuth }) => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     // Common fields
     email: '',
@@ -18,27 +21,173 @@ const Hero = ({ userType, onUserTypeChange, authType, showAuth }) => {
     description: ''
   })
 
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     })
+    // Clear error when user starts typing
+    if (error) setError('')
   }
 
   const handleUserTypeToggle = (type) => {
     onUserTypeChange(type)
+    // Clear form data when switching user types
+    setFormData({
+      email: '',
+      password: '',
+      confirmPassword: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      businessName: '',
+      businessAddress: '',
+      website: '',
+      description: ''
+    })
+    setError('')
+    setSuccess('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    const submitData = {
-      userType,
-      ...formData
+    setLoading(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      if (showAuth && authType === 'login') {
+        // Handle login
+        const loginData = {
+          email: formData.email,
+          password: formData.password,
+          rememberMe
+        }
+
+        const response = await fetch('http://localhost:8080/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(loginData)
+        })
+
+        const data = await response.json()
+        
+        if (data.success) {
+          // Store token in localStorage
+          localStorage.setItem('token', data.data.token)
+          localStorage.setItem('user', JSON.stringify(data.data.user))
+          
+          setSuccess('Login successful! Welcome back.')
+          
+          // Redirect based on user role
+          if (data.data.user.role === 'customer') {
+            setTimeout(() => {
+              navigate('/customer-dashboard')
+            }, 1500) // Wait 1.5 seconds to show success message
+          } else if (data.data.user.role === 'seller') {
+            setTimeout(() => {
+              navigate('/seller-dashboard')
+            }, 1500) // Wait 1.5 seconds to show success message
+          }
+          
+          // Reset form
+          setFormData({
+            email: '',
+            password: '',
+            confirmPassword: '',
+            firstName: '',
+            lastName: '',
+            phone: '',
+            businessName: '',
+            businessAddress: '',
+            website: '',
+            description: ''
+          })
+
+          console.log('User logged in:', data.data.user)
+        } else {
+          setError(data.message || 'Login failed. Please try again.')
+        }
+      } else {
+        // Handle signup
+        const signupData = {
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          role: userType, // 'customer' or 'seller'
+        }
+
+        // Add seller-specific fields if user is a seller
+        if (userType === 'seller') {
+          signupData.businessName = formData.businessName
+          signupData.businessAddress = formData.businessAddress
+          signupData.website = formData.website
+          signupData.description = formData.description
+        }
+
+        const response = await fetch('http://localhost:8080/api/users/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(signupData)
+        })
+
+        const data = await response.json()
+        
+        if (data.success) {
+          // Store token in localStorage
+          localStorage.setItem('token', data.data.token)
+          localStorage.setItem('user', JSON.stringify(data.data.user))
+          
+          setSuccess(`Account created successfully! Welcome to Amoura${userType === 'seller' ? ' as a seller' : ''}.`)
+          
+          // Redirect based on user role
+          if (data.data.user.role === 'customer') {
+            setTimeout(() => {
+              navigate('/customer-dashboard')
+            }, 1500) // Wait 1.5 seconds to show success message
+          } else if (data.data.user.role === 'seller') {
+            setTimeout(() => {
+              navigate('/seller-dashboard')
+            }, 1500) // Wait 1.5 seconds to show success message
+          }
+          
+          // Reset form
+          setFormData({
+            email: '',
+            password: '',
+            confirmPassword: '',
+            firstName: '',
+            lastName: '',
+            phone: '',
+            businessName: '',
+            businessAddress: '',
+            website: '',
+            description: ''
+          })
+
+          console.log('User registered:', data.data.user)
+        } else {
+          setError(data.message || 'Registration failed. Please try again.')
+        }
+      }
+    } catch (err) {
+      setError('Network error. Please check your connection and try again.')
+      console.error('Auth error:', err)
+    } finally {
+      setLoading(false)
     }
-    
-    console.log('Form submitted:', submitData)
-    // Add form submission logic here
   }
 
   return (
@@ -130,6 +279,19 @@ const Hero = ({ userType, onUserTypeChange, authType, showAuth }) => {
                   </p>
                 </div>
 
+                {/* Error/Success Messages */}
+                {error && (
+                  <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
+                    <p className="text-red-300 text-sm text-center">{error}</p>
+                  </div>
+                )}
+                
+                {success && (
+                  <div className="mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
+                    <p className="text-green-300 text-sm text-center">{success}</p>
+                  </div>
+                )}
+
                 {/* Animated Toggle Switcher */}
                 <div className="relative bg-white/10 rounded-full p-1 mb-4 border border-white/20">
                   <div 
@@ -195,6 +357,8 @@ const Hero = ({ userType, onUserTypeChange, authType, showAuth }) => {
                         <label className="flex items-center text-[#F2EBD9]/80">
                           <input
                             type="checkbox"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
                             className="mr-2 w-3 h-3 rounded border-white/30 bg-white/20 text-[#DF804D]"
                           />
                           Remember me
@@ -363,12 +527,19 @@ const Hero = ({ userType, onUserTypeChange, authType, showAuth }) => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[#DF804D] to-[#632111] text-white py-2.5 rounded-lg font-bold hover:from-[#632111] hover:to-[#DF804D] hover:scale-105 transition-all duration-300 shadow-lg flex items-center justify-center gap-2 mt-4"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-[#DF804D] to-[#632111] text-white py-2.5 rounded-lg font-bold hover:from-[#632111] hover:to-[#DF804D] hover:scale-105 transition-all duration-300 shadow-lg flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    {showAuth && authType === 'login' 
-                      ? 'Sign In' 
-                      : (userType === 'seller' ? 'Start Selling' : 'Join Amoura')
-                    }
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      showAuth && authType === 'login' 
+                        ? 'Sign In' 
+                        : (userType === 'seller' ? 'Start Selling' : 'Join Amoura')
+                    )}
                   </button>
                 </form>
                 

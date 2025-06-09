@@ -1,146 +1,238 @@
 const Product = require("../models/productModel");
+const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
 
-const addProduct = async (req, res) => {
-    try {
-        console.log("Request body:", req.body);
-        console.log("Request files:", req.files);
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
 
-        const { name, description, price, email } = req.body;
-        let images = [];
-
-        if (req.files && req.files.images) {
-            const uploadPath = path.join(__dirname, '../uploads');
-            if (!fs.existsSync(uploadPath)) {
-                fs.mkdirSync(uploadPath);
-            }
-
-            if (Array.isArray(req.files.images)) {
-                images = req.files.images.map(file => {
-                    const filePath = path.join(uploadPath, file.name);
-                    file.mv(filePath);
-                    console.log("File uploaded to:", filePath); // Add this line
-                    return file.name;
-                });
-            } else {
-                const filePath = path.join(uploadPath, req.files.images.name);
-                req.files.images.mv(filePath);
-                console.log("File uploaded to:", filePath); // Add this line
-                images = [req.files.images.name];
-            }
-        }
-
-        const newProduct = new Product({
-            name,
-            description,
-            price,
-            images,
-            email,
-        });
-
-        await newProduct.save();
-
-        res.status(201).json({ message: "Product added successfully!" });
-    } catch (error) {
-        console.error("Error adding product:", error);
-        res.status(500).json({ message: "An error occurred while adding the product.", error: error.message });
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"), false);
     }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+});
+
+// Create product
+const createProduct = async (req, res) => {
+  try {
+    const { name, description, price, category } = req.body;
+    const email = req.user.email; // Get seller's email from auth middleware
+
+    // Get uploaded file paths
+    const images = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+
+    if (images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one product image is required"
+      });
+    }
+
+    const product = new Product({
+      name,
+      description,
+      price: parseFloat(price),
+      category,
+      images,
+      email,
+      seller: req.user.id
+    });
+
+    await product.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Product created successfully",
+      data: product
+    });
+  } catch (error) {
+    console.error("Create product error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error creating product",
+      error: error.message
+    });
+  }
 };
 
+// Get all products
 const getAllProducts = async (req, res) => {
-    try {
-        const products = await Product.find();
-        res.status(200).json(products);
-    } catch (error) {
-        console.error("Error fetching products:", error);
-        res.status(500).json({ message: "An error occurred while fetching products.", error: error.message });
-    }
-};
-const getProductsByUserEmail = async (req, res) => {
-    try {
-      const { email } = req.params;
-      
-      if (!email) {
-        return res.status(400).json({ message: "Email is required" });
-      }
-  
-      const products = await Product.find({ userEmail: email });
-  
-      if (!products.length) {
-        return res.status(404).json({ message: "No products found" });
-      }
-  
-      res.json(products);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  };
-  
-
-const getProductById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ error: "Invalid product ID" });
-        }
-        const product = await Product.findById(id);
-        res.status(200).json(product);
-    } catch (error) {
-        console.error("Error fetching product:", error);
-        res.status(500).json({ message: "An error occurred while fetching the product.", error: error.message });
-    }
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      message: "Products retrieved successfully",
+      data: products
+    });
+  } catch (error) {
+    console.error("Get products error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving products",
+      error: error.message
+    });
+  }
 };
 
+// Get products by seller
+const getSellerProducts = async (req, res) => {
+  try {
+    const email = req.user.email;
+    const products = await Product.find({ email }).sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      message: "Seller products retrieved successfully",
+      data: products
+    });
+  } catch (error) {
+    console.error("Get seller products error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving seller products",
+      error: error.message
+    });
+  }
+};
+
+// Get single product
+const getProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: "Product retrieved successfully",
+      data: product
+    });
+  } catch (error) {
+    console.error("Get product error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving product",
+      error: error.message
+    });
+  }
+};
+
+// Update product
 const updateProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, description, price, email } = req.body;
-        let images = req.body.images;
+  try {
+    const { id } = req.params;
+    const { name, description, price, category } = req.body;
+    const email = req.user.email;
 
-        if (req.files && req.files.images) {
-            const uploadPath = path.join(__dirname, '../uploads');
-            if (!fs.existsSync(uploadPath)) {
-                fs.mkdirSync(uploadPath);
-            }
-
-            if (Array.isArray(req.files.images)) {
-                images = req.files.images.map(file => {
-                    const filePath = path.join(uploadPath, file.name);
-                    file.mv(filePath);
-                    return file.name;
-                });
-            } else {
-                const filePath = path.join(uploadPath, req.files.images.name);
-                req.files.images.mv(filePath);
-                images = [req.files.images.name];
-            }
-        }
-
-        const updatedProduct = await Product.findByIdAndUpdate(
-            id,
-            { name, description, price, images, email },
-            { new: true }
-        );
-
-        res.status(200).json(updatedProduct);
-    } catch (error) {
-        console.error("Error updating product:", error);
-        res.status(500).json({ message: "An error occurred while updating the product.", error: error.message });
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
     }
+
+    // Check if user owns this product
+    if (product.email !== email) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only update your own products"
+      });
+    }
+
+    // Update fields
+    const updateData = { name, description, price: parseFloat(price), category };
+    
+    // If new images are uploaded, add them
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => `/uploads/${file.filename}`);
+      updateData.images = newImages;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+    
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: updatedProduct
+    });
+  } catch (error) {
+    console.error("Update product error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating product",
+      error: error.message
+    });
+  }
 };
 
+// Delete product
 const deleteProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        await Product.findByIdAndDelete(id);
-        res.status(200).json({ message: "Product deleted successfully!" });
-    } catch (error) {
-        console.error("Error deleting product:", error);
-        res.status(500).json({ message: "An error occurred while deleting the product.", error: error.message });
+  try {
+    const { id } = req.params;
+    const email = req.user.email;
+
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
     }
+
+    // Check if user owns this product
+    if (product.email !== email) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only delete your own products"
+      });
+    }
+
+    await Product.findByIdAndDelete(id);
+    
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully"
+    });
+  } catch (error) {
+    console.error("Delete product error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error deleting product",
+      error: error.message
+    });
+  }
 };
 
-module.exports = { addProduct, getAllProducts, getProductsByUserEmail, getProductById, updateProduct, deleteProduct };
-
+module.exports = {
+  createProduct,
+  getAllProducts,
+  getSellerProducts,
+  getProduct,
+  updateProduct,
+  deleteProduct,
+  upload
+};

@@ -1,100 +1,201 @@
-const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const User = require("../models/userModel.js")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
-const signUp = async (req, res) => {
+const Signup = async(req, res) => {
     try {
-        const { name, email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).send("User already exists");
+        const { 
+            // Common fields
+            email, 
+            password, 
+            confirmPassword,
+            role, 
+            // Customer fields  
+            firstName,
+            lastName,
+            phone,
+            // Seller fields
+            businessName,
+            businessAddress,
+            website,
+            description,
+        } = req.body;
+
+        // Validate required fields
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required"
+            });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({
-            name,
+        // Validate password confirmation
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords do not match"
+            });
+        }
+
+        // Validate password strength
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 6 characters long"
+            });
+        }
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User with this email already exists"
+            });
+        }
+
+        const saltRounds = 12;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        let userData = {
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: role || 'customer' 
+        };
+
+        // Handle different form structures
+        if (firstName && lastName) {
+            // Hero.jsx form structure
+            userData.first_name = firstName;
+            userData.last_name = lastName;
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "First name and last name are required"
+            });
+        }
+
+        // Add role-specific fields
+        if (role === 'seller' || businessName) {
+            userData.role = 'seller';
+            // Store seller-specific data in a seller profile object
+            userData.sellerProfile = {
+                businessName: businessName || `${userData.first_name}'s Business`,
+                businessAddress: businessAddress || '',
+                website: website || '',
+                description: description || ''
+            };
+        }
+
+        // Add customer-specific fields
+        if (phone) {
+            userData.phone = phone;
+        }
+
+        // Create new user
+        const newUser = new User(userData);
+        await newUser.save();
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { 
+                userId: newUser._id, 
+                email: newUser.email, 
+                role: newUser.role 
+            },
+            process.env.JWT_SECRET || 'fallback_secret_key',
+            { expiresIn: '7d' }
+        );
+
+        // Remove password from response
+        const userResponse = newUser.toObject();
+        delete userResponse.password;
+
+        res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+            data: {
+                user: userResponse,
+                token
+            }
         });
 
-        await newUser.save();
-        res.status(201).json({ data: newUser, msg: "User created successfully" });
-        console.log(newUser);
     } catch (error) {
-        res.status(500).send(error.message);
+        console.error("Signup error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
-};
+}
 
-const getUserByEmail = async (req, res) => {
+const Login = async(req, res) => {
     try {
-        const { email } = req.params;
-        const user = await User.findOne({ email }).populate("cart");
+        const { email, password, rememberMe } = req.body;
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        // Validate required fields
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required"
+            });
         }
 
-        res.status(200).json(user);
-    } catch (error) {
-        console.error("Error fetching user data:", error);
-        res.status(500).json({ message: "An error occurred while fetching user data.", error: error.message });
-    }
-};
-
-const addAddress = async (req, res) => {
-    try {
-        const { email, address } = req.body;
+        // Find user by email
         const user = await User.findOne({ email });
-
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            });
         }
 
-        user.addresses.push(address);
-        await user.save();
-
-        res.status(200).json({ message: "Address added successfully", addresses: user.addresses });
-    } catch (error) {
-        console.error("Error adding address:", error);
-        res.status(500).json({ message: "An error occurred while adding the address.", error: error.message });
-    }
-};
-
-const getUserDashboard = (req, res) => {
-    res.json({ message: "Welcome to your Dashboard!", user: req.user });
-};
-
-const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-
-        if (!user || !(await user.comparePassword(password))) {
-            return res.status(401).json({ message: "Invalid email or password" });
+        // Check password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            });
         }
 
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        // Generate JWT token
+        const tokenExpiry = rememberMe ? '30d' : '7d';
+        const token = jwt.sign(
+            { 
+                userId: user._id, 
+                email: user.email, 
+                role: user.role 
+            },
+            process.env.JWT_SECRET || 'fallback_secret_key',
+            { expiresIn: tokenExpiry }
+        );
 
-        res.status(200).json({ token }); 
+        // Remove password from response
+        const userResponse = user.toObject();
+        delete userResponse.password;
+
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            data: {
+                user: userResponse,
+                token
+            }
+        });
+
     } catch (error) {
-        console.error("Error logging in:", error);
-        res.status(500).json({ message: "An error occurred while logging in.", error: error.message });
+        console.error("Login error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
-};
+}
 
-const registerUser = async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = new User({ email, password });
-        await user.save();
-
-        res.status(201).json({ message: "User registered successfully!" });
-    } catch (error) {
-        console.error("Error registering user:", error);
-        res.status(500).json({ message: "An error occurred while registering the user.", error: error.message });
-    }
-};
-
-module.exports = { signUp, getUserByEmail, addAddress, getUserDashboard, loginUser, registerUser };
+module.exports = {
+    Signup,
+    Login
+}

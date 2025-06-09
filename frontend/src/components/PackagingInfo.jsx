@@ -84,7 +84,7 @@ const PackagingInfo = () => {
           <div className="text-center group hover:scale-105 transition-all duration-500">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl h-full">
               <div className="text-2xl mb-4 group-hover:animate-bounce">🌡️</div>
-              <h4 className="text-xl font-bold text-[#DF804D] mb-3">Temperature Controlled</h4>
+              <h4 className="text-xl font-bold text-[#b4521d] mb-3">Temperature Controlled</h4>
               <p className="text-[#F2EBD9]/80">Special insulated packaging to maintain optimal flower temperature during delivery</p>
             </div>
           </div>
@@ -92,7 +92,7 @@ const PackagingInfo = () => {
           <div className="text-center group hover:scale-105 transition-all duration-500">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl h-full">
               <div className="text-2xl mb-4 group-hover:animate-bounce delay-100">♻️</div>
-              <h4 className="text-xl font-bold text-[#DF804D] mb-3">Eco-Friendly</h4>
+              <h4 className="text-xl font-bold text-[#b4521d] mb-3">Eco-Friendly</h4>
               <p className="text-[#F2EBD9]/80">100% recyclable packaging materials and biodegradable flower food</p>
             </div>
           </div>
@@ -100,7 +100,7 @@ const PackagingInfo = () => {
           <div className="text-center group hover:scale-105 transition-all duration-500">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl h-full">
               <div className="text-2xl mb-4 group-hover:animate-bounce delay-200">🚚</div>
-              <h4 className="text-xl font-bold text-[#DF804D] mb-3">Safe Delivery</h4>
+              <h4 className="text-xl font-bold text-[#b4521d] mb-3">Safe Delivery</h4>
               <p className="text-[#F2EBD9]/80">Protective cushioning ensures your flowers arrive in perfect condition</p>
             </div>
           </div>
@@ -109,7 +109,7 @@ const PackagingInfo = () => {
         {/* Additional Information */}
         <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-xl">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-serif font-bold text-[#DF804D] mb-4">
+            <h3 className="text-2xl font-serif font-bold text-[#7b3814] mb-4">
               Premium Unboxing Experience
             </h3>
             <p className="text-[#F2EBD9]/80 max-w-3xl mx-auto mb-6">
